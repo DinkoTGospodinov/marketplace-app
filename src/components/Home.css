@@ -1,0 +1,29 @@
+.home-container {
+    text-align: center;
+    padding: 50px;
+    background-color: #f8f9fa;
+  }
+  
+  .home-container h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+  }
+  
+  .home-container p {
+    font-size: 1.5em;
+    margin-bottom: 30px;
+  }
+  
+  .shop-now-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .shop-now-button:hover {
+    background-color: #0056b3;
+  }
