@@ -1,5 +1,5 @@
-import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +9,9 @@ const Register = () => {
   });
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -17,29 +20,56 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Register Data:", formData);
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/users/register",
-        JSON.stringify(formData),
-        {
+
+    // Предотвратяваме повторно изпращане
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+  };
+
+  useEffect(() => {
+    // Изпълняваме само ако е стартиран процесът на изпращане
+    if (!isSubmitting) return;
+
+    const registerUser = async () => {
+      console.log("Register Data:", formData);
+
+      const userData = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        password: formData.password.trim(),
+      };
+
+      try {
+        const response = await fetch("http://localhost:5000/api/users/register", {
+          method: "POST",
+          body: JSON.stringify(userData),
           headers: {
             "Content-Type": "application/json",
           },
+        });
+
+        const data = await response.json();
+        console.log("Registration response:", data);
+
+        if (response.ok) {
+          setMessage("Registration successful");
+          navigate("/login");
+        } else {
+          setError(data.message || "Registration failed");
         }
-      );
-      setMessage(res.data.message);
-      console.log(res.data);
-    } catch (error) {
-      console.error(
-        "Registration error:",
-        error.response?.data || error.message
-      );
-      setError(error.response?.data?.error || "something went wrong");
-    }
-  };
+      } catch (error) {
+        console.error("Registration error:", error);
+        setError("Something went wrong. Please try again.");
+      } finally {
+        setIsSubmitting(false); // Позволяваме нови изпращания
+      }
+    };
+
+    registerUser();
+  }, [isSubmitting, formData, navigate]); // useEffect се стартира, когато `isSubmitting` стане true
 
   return (
     <div className="container">
@@ -74,8 +104,8 @@ const Register = () => {
           className="input"
           required
         />
-        <button type="submit" className="button">
-          Register
+        <button type="submit" className="button" disabled={isSubmitting}>
+          {isSubmitting ? "Registering..." : "Register"}
         </button>
       </form>
     </div>

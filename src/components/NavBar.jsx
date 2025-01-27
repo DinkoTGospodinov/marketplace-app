@@ -1,49 +1,37 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 
 const NavBar = () => {
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    alert("Logged out successfully!");
+    navigate("/");
+  };
+
   return (
     <nav className="navbar">
-      <div className="logo">
-        <ul className="navList">
-     
-
-     
-          <div className="left-nav">
-            <li>
-              <Link to="/" className="link">
-                Home
-              </Link>
-            </li>
-
-            <li>
-              <Link to="/products" className="link">
-                Products
-              </Link>
-            </li>
-            <li>
-              <Link to="/add-product" className="link">
-                Add Product
-              </Link>
-            </li>
-          </div>
-
-          <div className="right-nav">
-            <li>
-              <Link to="/login" className="link">
-                Login
-              </Link>
-            </li>
-            <li>
-              <Link to="/register" className="link">
-                Register
-              </Link>
-            </li>
-          </div>
-         
-        </ul>
-    </div>
+      <div className="left-nav">
+        <Link to="/">Home</Link>
+        <Link to="/products">Products</Link>
+        {token && <Link to="/add-product">Add Product</Link>}
+      </div>
+      <div className="right-nav">
+        {!token ? (
+          <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
+          </>
+        ) : (
+          <>
+            <Link to="/profile">Profile</Link>
+            <button onClick={handleLogout}>Logout</button>
+          </>
+        )}
+      </div>
     </nav>
   );
 };

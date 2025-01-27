@@ -1,11 +1,13 @@
-import axios from "axios";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import '../../styles/components/Auth.css'
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -13,15 +15,29 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login Data:", formData);
-    
-    try { 
-      const response = await axios("http://localhost:5000/login", formData);
 
-   setMessage(response.data.message);
-   localStorage.setItem("token", response.data.token);
-    }catch (error) {
-      setError(error.response?.data?.error || 'something went wrong');
+    console.log("Login Data:", formData);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      console.log("Login response:", data);
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      localStorage.setItem("token", data.token);
+      setMessage("Login successful!");
+      navigate("/"); // Redirect to the home page
+    } catch (error) {
+      console.error("Login error:", error.message);
+      setError(error.message);
     }
   };
 
@@ -50,7 +66,9 @@ const Login = () => {
           className="input"
           required
         />
-        <button type="submit" className="button">Login</button>
+        <button type="submit" className="button">
+          Login
+        </button>
       </form>
     </div>
   );

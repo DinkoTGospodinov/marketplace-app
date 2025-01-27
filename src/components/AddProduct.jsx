@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import "./AddProduct.css";
 
@@ -9,8 +9,7 @@ const AddProduct = () => {
     price: "",
     category: "",
     location: "",
-    images: [],
-    ownerId: "",
+    images: "",
   });
 
   const handleChange = (e) => {
@@ -19,26 +18,26 @@ const AddProduct = () => {
       ...prevProduct,
       [name]: value,
     }));
-    // setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const productData = {
-      title: formData.title,
-      description: formData.description,
-      price: formData.price,
-      category: formData.category,
-      location: formData.location,
-      images: formData.images.split(', ').map((image) => image.trim()),
-      ownerId: formData.ownerId,
-    }
+      ...formData,
+      images: formData.images.split(",").map((img) => img.trim()),
+    };
 
     try {
       const response = await axios.post(
         "http://localhost:5000/api/add-product",
-        formData
+        productData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
       );
       alert("Product added successfully!");
       console.log(response.data);
@@ -49,81 +48,65 @@ const AddProduct = () => {
   };
 
   return (
-    <div>
+    <div className="add-product-container">
       <h2>Add Product</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>
-            Title:
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          <label>Title:</label>
+          <input
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+          />
         </div>
-        <br />
         <div>
-          <label>
-            Description:
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-            ></textarea>
-          </label>
+          <label>Description:</label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+          ></textarea>
         </div>
-        <br />
         <div>
-          <label>
-            Price:
-            <input
-              type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          <label>Price:</label>
+          <input
+            type="number"
+            name="price"
+            value={formData.price}
+            onChange={handleChange}
+            required
+          />
         </div>
-        <br />
         <div>
-          <label>
-            Category:
-            <input
-              type="text"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          <label>Category:</label>
+          <input
+            type="text"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+          />
         </div>
-        <br />
         <div>
-          <label>
-            Location:
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <br />
-          <label>
-            Images
-            <input
-              type="text"
-              name="images"
-              value={formData.images}
-              onChange={handleChange}
-            />
-          </label>
-          <br />
+          <label>Location:</label>
+          <input
+            type="text"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Images (comma-separated URLs):</label>
+          <input
+            type="text"
+            name="images"
+            value={formData.images}
+            onChange={handleChange}
+          />
         </div>
         <button type="submit">Add Product</button>
       </form>

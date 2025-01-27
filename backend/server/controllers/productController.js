@@ -1,4 +1,3 @@
-
 const { default: mongoose } = require("mongoose");
 const Product = require("../models/Product.js");
 
@@ -32,16 +31,18 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.addProduct = async (req, res) => {
-  const { title, description, price, category, location, images, ownerId } =
-    req.body;
-
-
-    if(!title, !description, !price, !category, !location, !images, !ownerId ){
-      return res.status(400).json({message: "All fields are required"});
-    }
-  console.log(req.body);
-
+  
   try {
+    const { title, description, price, category, location, images } = req.body;
+
+    const ownerId = req.user.id;
+
+    if (
+      (!title, !description, !price, !category, !location, !images, !ownerId)
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
     const newProduct = new Product({
       title,
       description,

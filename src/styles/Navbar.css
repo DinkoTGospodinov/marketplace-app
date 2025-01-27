@@ -1,47 +1,44 @@
 .navbar {
-  background-color: #a0aab3;
-  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #333;
   padding: 10px 20px;
-}
-
-.navList {
   color: white;
-  display: flex;
-  justify-content: space-evenly;
-  gap: 10px;
-
-  margin: 5px;
-  padding: 1px;
-  list-style: none;
-}
-.left-nav {
-  display: flex;
-  gap: 10px;
-  justify-content: start;
-   
 }
 
+ 
+.left-nav,
 .right-nav {
   display: flex;
-  gap: 10px;
-  margin-left: 28em;
   align-items: center;
-  justify-content: flex-end;
+  gap: 15px;
 }
 
-.link li {
-  margin: 0 10px;
-}
-
-.nav-links a {
-  color: rgb(150, 9, 9);
+ 
+.navbar a {
   text-decoration: none;
-  transition: color 0.3s;
+  color: white;
+  font-weight: bold;
+  transition: color 0.3s ease;
 }
 
-.nav-links a:hover {
-  color: #1abc9c;
+.navbar a:hover {
+  color: #00bcd4;
+}
+
+/* Бутон за logout */
+.right-nav button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.right-nav button:hover {
+  background-color: #d32f2f;
 }
